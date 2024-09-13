@@ -1,6 +1,7 @@
 package com.example.lovecalc.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +11,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.lovecalc.LoveModel
 import com.example.lovecalc.R
 import com.example.lovecalc.databinding.FragmentResultBinding
-
-class ResultFragment : Fragment() {
+import com.example.lovecalc.interfaces.ResultContract
+import com.example.lovecalc.ui.presenters.ResultPresenter
+class ResultFragment : Fragment(), ResultContract.View {
     private lateinit var binding: FragmentResultBinding
+    private lateinit var presenter: ResultContract.Presenter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,23 +27,36 @@ class ResultFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        presenter = ResultPresenter(this)
         fillInTheData()
         initListener()
     }
 
-    private fun initListener() {
-        binding.btnTryAgain.setOnClickListener {
-            findNavController().navigate(R.id.loveCalcFragment)
+    private fun fillInTheData() = with(binding) {
+        setFragmentResultListener("KEY_ARG") { _, bundle ->
+            val result = bundle.getSerializable("data") as? LoveModel
+            if (result != null) {
+                showData(result)
+            } else {
+                Log.e("ResultFragment", "No data received or data is null")
+            }
         }
     }
 
-    private fun fillInTheData() = with(binding) {
-        setFragmentResultListener("key") {_, bundle ->
-            val result = bundle.getSerializable("data") as? LoveModel
-            tvName1.text = result?.firstName
-            tvName2.text = result?.secondName
-            tvPercent.text = result?.percentage
-            tvResult.text = result?.result
+    private fun initListener() {
+        binding.btnTryAgain.setOnClickListener {
+            presenter.onTryAgainClicked()
         }
+    }
+
+    override fun showData(loveModel: LoveModel) = with(binding) {
+        tvName1.text = loveModel.firstName
+        tvName2.text = loveModel.secondName
+        tvPercent.text = loveModel.percentage
+        tvResult.text = loveModel.result
+    }
+
+    override fun navigateToCalculation() {
+        findNavController().navigate(R.id.loveCalcFragment)
     }
 }
