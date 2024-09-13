@@ -46,14 +46,6 @@ class LoveCalcFragment : Fragment(), LoveCalcContract.View {
         }
     }
 
-    override fun showLoading() {
-        // Показать индикатор загрузки
-    }
-
-    override fun hideLoading() {
-        // Скрыть индикатор загрузки
-    }
-
     override fun showResult(loveModel: LoveModel) {
         setFragmentResult(
             "KEY_ARG", bundleOf("data" to loveModel)
@@ -66,6 +58,5 @@ class LoveCalcFragment : Fragment(), LoveCalcContract.View {
 
     override fun showError(message: String) {
         Log.e("Error", message)
-        // Показать сообщение об ошибке
     }
 }

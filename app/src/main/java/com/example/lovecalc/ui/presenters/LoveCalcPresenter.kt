@@ -14,7 +14,6 @@ class LoveCalcPresenter(
 ) : LoveCalcContract.Presenter {
 
     override fun calculateLovePercentage(firstName: String, secondName: String) {
-        view.showLoading()
 
         apiService.api.getPercentage(
             firstName = firstName,
@@ -23,7 +22,6 @@ class LoveCalcPresenter(
             host = "love-calculator.p.rapidapi.com"
         ).enqueue(object : Callback<LoveModel> {
             override fun onResponse(call: Call<LoveModel>, response: Response<LoveModel>) {
-                view.hideLoading()
                 if (response.isSuccessful && response.body() != null) {
                     val result = response.body()
                     result?.let { view.showResult(it) }
@@ -34,7 +32,6 @@ class LoveCalcPresenter(
             }
 
             override fun onFailure(call: Call<LoveModel>, t: Throwable) {
-                view.hideLoading()
                 view.showError("Request failed: ${t.message}")
             }
         })

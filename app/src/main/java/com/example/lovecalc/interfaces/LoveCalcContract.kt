@@ -4,8 +4,6 @@ import com.example.lovecalc.LoveModel
 
 interface LoveCalcContract {
     interface View {
-        fun showLoading()
-        fun hideLoading()
         fun showResult(loveModel: LoveModel)
         fun showError(message: String)
         fun navigateToResult()
